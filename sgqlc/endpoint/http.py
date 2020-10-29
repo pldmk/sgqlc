@@ -116,6 +116,7 @@ class HTTPEndpoint(BaseEndpoint):
         self.timeout = timeout
         self.urlopen = urlopen or urllib.request.urlopen
         self.method = method
+        self.response_headers = None
 
     def __str__(self):
         return '%s(url=%s, base_headers=%r, timeout=%r, method=%s)' % (
@@ -178,6 +179,7 @@ class HTTPEndpoint(BaseEndpoint):
 
         try:
             with self.urlopen(req, timeout=timeout or self.timeout) as f:
+                self.response_headers = dict(f.getheaders())
                 body = f.read().decode('utf-8')
                 try:
                     data = json.loads(body)
